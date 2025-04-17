@@ -1,6 +1,22 @@
-FROM node:22.14.0-alpine
+# Базовый образ
+FROM node:18-alpine
 
-RUN npm i -g maildev@2.0.5
+# Рабочая директория
+WORKDIR /app
 
-CMD maildev
-docker ps
+# Установка зависимостей
+COPY package*.json ./
+RUN npm install --force
+
+# Копирование исходного кода
+COPY . .
+
+# Сборка проекта (если нужно)
+RUN npm run build
+
+# Используем порт Heroku
+ENV PORT=3000
+EXPOSE $PORT
+
+# Запуск приложения
+CMD ["npm", "run", "start:prod"]

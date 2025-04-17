@@ -20,6 +20,7 @@
     "start:swc": "nest start -b swc -w",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
+    "heroku-postbuild": "npm run build",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\"",
     "test": "jest",
     "test:watch": "jest --watch",

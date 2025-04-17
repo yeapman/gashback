@@ -12,7 +12,6 @@ export class AuthRegisterLoginDto {
   @ApiProperty()
   @MinLength(6)
   password: string;
-
   // @ApiProperty({ example: 'John' })
   // @IsNotEmpty()
   // firstName: string;

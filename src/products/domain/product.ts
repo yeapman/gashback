@@ -18,6 +18,9 @@ export class Product {
     rating: number;
 
     @Prop({ required: true })
+    ratingQuantity: number;
+
+    @Prop({ required: true })
     feedback: string;
 
     @Prop({ required: true })

@@ -23,6 +23,12 @@ export class CreateProductDto {
     @Min(0)
     rating?: number;
 
+    @ApiPropertyOptional({ example: 10, type: Number })
+    @IsOptional()
+    @IsNumber()
+    @Min(0)
+    ratingQuantity?: number;
+
     @ApiPropertyOptional({ example: 4000, type: Number })
     @IsOptional()
     @IsNumber()

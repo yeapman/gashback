@@ -4,10 +4,14 @@ import { Product, ProductSchema } from './domain/product';
 import { ProductsService } from './products.service';
 import { ProductRepository } from './infrastructure/persistence/product.repository';
 import { ProductsController } from './products.controller';
+import { ProductNew, ProductNewSchema } from './dto/product.schema';
 
 @Module({
     imports: [
-        MongooseModule.forFeature([{ name: Product.name, schema: ProductSchema }]), // Регистрируем модель
+        MongooseModule.forFeature([
+            { name: Product.name, schema: ProductSchema },
+            { name: ProductNew.name, schema: ProductNewSchema },
+        ]),
     ],
     providers: [ProductsService, ProductRepository], // Регистрируем сервис и репозиторий
     controllers: [ProductsController], // Регистрируем контроллер

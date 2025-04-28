@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { Product } from './domain/product';
+import { CreateReviewDto } from './dto/create-review.dto';
 
 @Controller('products')
 export class ProductsController {
@@ -29,5 +30,11 @@ export class ProductsController {
     @Post()
     async createProduct(@Body() createProductDto: any): Promise<Product> {
         return this.productsService.create(createProductDto);
+    }
+
+
+    @Post(':id/review')
+    async addReview(@Param('id') productId: string, @Body() createReviewDto: CreateReviewDto) {
+        return this.productsService.addReview(productId, createReviewDto);
     }
 }

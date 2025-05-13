@@ -5,10 +5,11 @@ import { CreateReviewDto } from './dto/create-review.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { ProductNew } from './dto/product.schema';
+import { allFeedback, allFeedbackSchema } from './dto/feedback.schema';
 
 @Injectable()
 export class ProductsService {
-    constructor(private readonly productRepository: ProductRepository, @InjectModel(ProductNew.name) private productModel: Model<ProductNew>) {}
+    constructor(private readonly productRepository: ProductRepository, @InjectModel(ProductNew.name) private productModel: Model<ProductNew>, @InjectModel(allFeedback.name) private feedbackModel: Model<allFeedback>) {}
 
     // Метод для получения списка товаров с пагинацией
     async findManyWithPagination({
@@ -46,6 +47,12 @@ export class ProductsService {
             throw new NotFoundException('Product not found');
         }
 
+        await this.feedbackModel.create({
+            productId: productId,
+            allFeedback: createReviewDto.currentFeedback,
+            rating: createReviewDto.rating
+        });
+
         product.averageRating = ((product.averageRating * product.reviewsCount) + rating!) / (product.reviewsCount + 1);
         product.reviewsCount += 1;
 
@@ -57,6 +64,11 @@ export class ProductsService {
         };
     }
 
+
+
+    async findFeedbacksById(productId: string): Promise<allFeedback[]> {
+        return this.feedbackModel.find({productId}).lean().exec();
+    }
 
 
 }

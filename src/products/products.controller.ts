@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { Product } from './domain/product';
 import { CreateReviewDto } from './dto/create-review.dto';
+import { allFeedback } from './dto/feedback.schema';
 
 @Controller('products')
 export class ProductsController {
@@ -24,6 +25,11 @@ export class ProductsController {
     @Get(':id')
     async getProduct(@Param('id') id: string): Promise<Product | null> {
         return this.productsService.findById(id);
+    }
+
+    @Get(':id/feedback')
+    async getFeedback(@Param('id') id: string): Promise<allFeedback[]> {
+        return this.productsService.findFeedbacksById(id);
     }
 
     // Создаем новый товар

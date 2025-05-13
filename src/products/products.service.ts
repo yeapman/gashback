@@ -9,7 +9,7 @@ import { allFeedback, allFeedbackSchema } from './dto/feedback.schema';
 
 @Injectable()
 export class ProductsService {
-    constructor(private readonly productRepository: ProductRepository, @InjectModel(ProductNew.name) private productModel: Model<ProductNew>, @InjectModel(allFeedback.name) private feedbackModel: Model<allFeedback>) {}
+    constructor(  @InjectModel(allFeedback.name) private readonly allFeedbackSchema: Model<allFeedback[]>, private readonly productRepository: ProductRepository, @InjectModel(ProductNew.name) private productModel: Model<ProductNew>, @InjectModel(allFeedback.name) private feedbackModel: Model<allFeedback>) {}
 
     // Метод для получения списка товаров с пагинацией
     async findManyWithPagination({
@@ -69,6 +69,42 @@ export class ProductsService {
     async findFeedbacksById(productId: string): Promise<allFeedback[]> {
         return this.feedbackModel.find({productId}).lean().exec();
     }
+
+
+
+    async calculateAverageRating(productId: string): Promise<number> {
+        // Получаем все отзывы для данного товара
+        const reviews = await this.feedbackModel.find({ productId });
+
+        // Если отзывы есть, считаем средний рейтинг
+        if (reviews.length > 0) {
+            const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
+            return totalRating / reviews.length;
+        }
+
+        // Если отзывов нет, возвращаем 0
+        return 0;
+    }
+
+
+
+    // Метод для обновления рейтинга у продукта
+    async updateRating(productId: string, averageRating: number): Promise<void> {
+        await this.productModel.updateOne(
+          { _id: productId },
+          { $set: { rating: averageRating } },
+        );
+    }
+    //
+    // // Метод для получения продуктов с пагинацией
+    // async findManyWithPagination(paginationOptions: { filterOptions: any; paginationOptions: { skip: number; limit: number; } }): Promise<Product[]> {
+    //     // Пример использования пагинации
+    //     const { skip, limit } = paginationOptions.paginationOptions;
+    //     return this.productModel.find(paginationOptions.filterOptions)
+    //       .skip(skip)
+    //       .limit(limit)
+    //       .exec();
+    // }
 
 
 }

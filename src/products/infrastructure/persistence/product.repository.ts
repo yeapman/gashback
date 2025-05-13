@@ -25,7 +25,7 @@ export class ProductRepository {
 
         const result = await query; // Ждём выполнение запроса
 
-        return result.map(({ _id, ...rest }) => ({ id: _id.toString(), ...rest }));
+        return result.map(({ _id, ...rest }) => ({ _id, id: _id.toString(), ...rest }));
     }
 
     // Метод для получения товара по ID

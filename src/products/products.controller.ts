@@ -11,14 +11,25 @@ export class ProductsController {
     // Получаем все товары с пагинацией
     @Get()
     async getProducts(
-        @Query() filterOptions: any,
-        @Query('skip') skip = 0,
-        @Query('limit') limit = 10,
-    ): Promise<Product[]> {
-        return this.productsService.findManyWithPagination({
+      @Query() filterOptions: any,
+      @Query('skip') skip = 0,
+      @Query('limit') limit = 10,
+    ): Promise<any> {
+        // Получаем все продукты с пагинацией
+        const products = await this.productsService.findManyWithPagination({
             filterOptions,
             paginationOptions: { skip, limit },
         });
+
+        // Для каждого продукта получаем средний рейтинг и обновляем его в базе
+        for (const product of products) {
+            const averageRating = await this.productsService.calculateAverageRating(product._id.toString());
+            const roundedAverage = Math.round(averageRating * 10) / 10;
+            // Обновляем продукт с рассчитанным средним рейтингом
+            await this.productsService.updateRating(product._id.toString(), roundedAverage);
+        }
+
+        return products;
     }
 
     // Получаем товар по ID
